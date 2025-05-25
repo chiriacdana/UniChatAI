@@ -1,6 +1,5 @@
 const API_KEY = "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";
 const MODEL = "meta-llama/llama-3-8b-instruct";
-
 const specializari = {
     "informatica": {
         name: "Informatică",
@@ -19,7 +18,6 @@ const specializari = {
         url: "https://orar.ulbsibiu.ro/stiinte.php?p=224&a=1"
     }
 };
-
 document.getElementById("welcome-time").textContent = new Date().toLocaleString('ro-RO', {
     hour: '2-digit',
     minute: '2-digit',
@@ -27,7 +25,6 @@ document.getElementById("welcome-time").textContent = new Date().toLocaleString(
     month: '2-digit',
     year: 'numeric'
 });
-
 function appendMessage(message, sender) {
     const chatbox = document.getElementById("chatbox");
     const messageElement = document.createElement("div");
@@ -41,12 +38,10 @@ function appendMessage(message, sender) {
     chatbox.appendChild(messageElement);
     chatbox.scrollTop = chatbox.scrollHeight;
 }
-
 function quickAction(action) {
     document.getElementById("userInput").value = action;
     sendMessage();
 }
-
 async function getOrar(specializare) {
     const specializareLower = specializare.toLowerCase();
     const specializareInfo = specializari[specializareLower] ||
@@ -65,20 +60,16 @@ async function getOrar(specializare) {
     </div>
     `;
 }
-
 async function sendMessage() {
     const userInput = document.getElementById("userInput").value.trim();
     if (!userInput) return;
-
     appendMessage(userInput, "user");
     document.getElementById("userInput").value = "";
-
     if (userInput.toLowerCase().includes("orar")) {
         const loadingElement = document.createElement("div");
         loadingElement.className = "loading";
         loadingElement.textContent = "Se încarcă orarul...";
         document.getElementById("chatbox").appendChild(loadingElement);
-
         try {
             let specializare = "informatica";
             if (userInput.toLowerCase().includes("mate") || userInput.toLowerCase().includes("matematica")) {
@@ -93,12 +84,10 @@ async function sendMessage() {
         }
         return;
     }
-
     const loadingElement = document.createElement("div");
     loadingElement.className = "loading";
     loadingElement.textContent = "Chatbot scrie...";
     document.getElementById("chatbox").appendChild(loadingElement);
-
     try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -118,11 +107,9 @@ async function sendMessage() {
 - Conturi instituționale
 - Software educațional
 - Orarul cursurilor
-
 Specializări disponibile:
 - Informatică
 - Matematică-Informatică
-
 Fii concis și oferă soluții practice. Dacă nu știi răspunsul, îndrumă utilizatorul către departamentul IT.`
                     },
                     {
@@ -133,7 +120,6 @@ Fii concis și oferă soluții practice. Dacă nu știi răspunsul, îndrumă ut
                 max_tokens: 500
             })
         });
-
         const data = await response.json();
         document.getElementById("chatbox").removeChild(loadingElement);
 
@@ -148,8 +134,6 @@ Fii concis și oferă soluții practice. Dacă nu știi răspunsul, îndrumă ut
         appendMessage("A apărut o eroare la conectarea cu serverul. Te rog încearcă din nou.", "bot");
     }
 }
-
-// Permite trimiterea mesajului la apăsarea tastei Enter
 document.getElementById("userInput").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         sendMessage();
