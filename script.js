@@ -1,4 +1,4 @@
-const API_KEY = "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";
+const API_KEY = "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";
 const MODEL = "meta-llama/llama-3-8b-instruct";
 const specializari = {
     "informatica": {
@@ -65,6 +65,7 @@ async function sendMessage() {
     if (!userInput) return;
     appendMessage(userInput, "user");
     document.getElementById("userInput").value = "";
+
     if (userInput.toLowerCase().includes("orar")) {
         const loadingElement = document.createElement("div");
         loadingElement.className = "loading";
@@ -107,9 +108,11 @@ async function sendMessage() {
 - Conturi instituționale
 - Software educațional
 - Orarul cursurilor
+
 Specializări disponibile:
 - Informatică
 - Matematică-Informatică
+
 Fii concis și oferă soluții practice. Dacă nu știi răspunsul, îndrumă utilizatorul către departamentul IT.`
                     },
                     {
@@ -120,18 +123,24 @@ Fii concis și oferă soluții practice. Dacă nu știi răspunsul, îndrumă ut
                 max_tokens: 500
             })
         });
+        if (!response.ok) {
+            const errorData = await response.json();
+            appendMessage(`Eroare API ${errorData.message || response.statusText}`, "bot");
+            document.getElementById("chatbox").removeChild(loadingElement);
+            return;
+        }
         const data = await response.json();
         document.getElementById("chatbox").removeChild(loadingElement);
 
-        if (data.choices && data.choices.length > 0) {
-            const botReply = data.choices[0].message.content;
-            appendMessage(botReply, "bot");
+        if (data.choices && data.choices[0].message.content) {
+            appendMessage(data.choices[0].message.content, "bot");
         } else {
-            appendMessage("Îmi pare rău, nu am putut genera un răspuns acum. Te rog încearcă mai târziu.", "bot");
+            appendMessage("Îmi pare rău, am întâmpinat o problemă tehnică. Te rog încearcă din nou.", "bot");
         }
     } catch (error) {
         document.getElementById("chatbox").removeChild(loadingElement);
-        appendMessage("A apărut o eroare la conectarea cu serverul. Te rog încearcă din nou.", "bot");
+        appendMessage(`Eroare de conexiune: ${error.message}`, "bot");
+        console.error("Eroare API:", error);
     }
 }
 document.getElementById("userInput").addEventListener("keydown", function (event) {
