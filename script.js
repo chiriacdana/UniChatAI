@@ -1,4 +1,4 @@
-const API_KEY = "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";
+const API_KEY = "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";
 const MODEL = "meta-llama/llama-3-8b-instruct";
 const specializari = {
     "informatica": {
